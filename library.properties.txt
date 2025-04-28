@@ -1,0 +1,9 @@
+name=ESPCPUTemp
+version=1.0.0
+author=pel.hu
+maintainer=pel.hu
+sentence=A library for reading CPU temperature on ESP32 variants.
+paragraph=Supports ESP32, ESP32-S2, S3, C3, C6, H2 chips with legacy and new temperature sensor drivers.
+category=Sensors
+url=https://github.com/PelicanHu/ESPCPUTemp
+architectures=esp32
