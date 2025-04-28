@@ -13,14 +13,16 @@ The **ESPCPUTemp** library provides a simple and unified interface to read the i
 - **Cross-Platform**: Compatible with multiple ESP32 variants using the Arduino core.
 
 ## Supported Devices
-| Chip Model       | Driver Type |
-|------------------|-------------|
-| ESP32 (D0WD, V3, etc.) | Legacy      |
-| ESP32-S2         | New         | 
-| ESP32-S3         | New         |
-| ESP32-C3         | New         |
-| ESP32-C6         | New         |
-| ESP32-H2         | New         |
+| Chip Model       | Driver Type |  Sensor Status   |
+|------------------|-------------|-----------|
+| ESP32-D0WD       | Legacy      | not found |
+| ESP32-D0WDQ6     | Legacy      | not found |
+| ESP32-D0WD-V3    | Legacy      | not found |
+| ESP32-S2         | New         | working |
+| ESP32-S3         | New         | working |
+| ESP32-C3         | New         | working |
+| ESP32-C6         | New         | working |
+| ESP32-H2         | New         | working |
 
 ## Installation
 
@@ -77,3 +79,87 @@ void loop() {
   }
   delay(5000); // Read every 5 seconds
 }
+```
+
+### Example Output
+
+```
+Temperature sensor initialized successfully
+CPU Temperature: 45.2 °C
+CPU Temperature: 46.1 °C
+```
+
+### API Reference
+
+- **Constructor**: `ESPCPUTemp()`
+  - Initializes the temperature sensor object.
+
+- **Destructor**: `~ESPCPUTemp()`
+  - Cleans up resources and disables the sensor.
+
+- **begin()**: `bool begin()`
+  - Initializes the temperature sensor based on the detected chip model.
+  - Returns `true` if successful, `false` otherwise.
+
+- **tempAvailable()**: `bool tempAvailable() const`
+  - Checks if the temperature sensor is available.
+  - Returns `true` if the sensor is initialized, `false` otherwise.
+
+- **getTemp()**: `float getTemp()`
+  - Reads the current CPU temperature in °C.
+  - Returns the temperature as a `float` or `NAN` if the reading fails.
+
+### Error Handling
+
+The library provides detailed Serial output for debugging, including:
+
+- Chip model detection.
+- Driver availability (legacy or new).
+- Initialization errors with ESP error codes.
+- Read errors during temperature measurement.
+
+## Configuration
+
+The library uses preprocessor directives to enable/disable driver support:
+
+- `NEW_DRIVER_AVAILABLE`: Defined for ESP32-S2, S3, C3, C6, and H2 chips when the new driver is available (requires `<driver/temperature_sensor.h>`).
+- `LEGACY_DRIVER_AVAILABLE`: Defined for ESP32 variants when the legacy driver is available (requires `<driver/temp_sensor.h>`).
+
+These directives are automatically handled by the Arduino core based on the selected board.
+
+## Notes
+
+- **Temperature Range**: The sensor is configured for -10°C to 80°C. Modify the `range_min` and `range_max` values in `initTempSensorNew()` or `dac_offset` in `initTempSensorLegacy()` if a different range is needed.
+- **Accuracy**: The internal temperature sensor provides approximate values. For precise measurements, consider an external sensor.
+- **Arduino Core Compatibility**: Ensure you are using a recent version of the ESP32 Arduino core (e.g., 3.2.0 or later) for full compatibility with newer chips like ESP32-C6 and H2.
+
+## Troubleshooting
+
+- **"Failed to initialize temperature sensor"**:
+  - Check if the correct board is selected in the Arduino IDE (e.g., "ESP32 Dev Module" for ESP32, "ESP32C3 Dev Module" for ESP32-C3).
+  - Ensure the Arduino core is up-to-date.
+- **"Legacy/New driver not available"**:
+  - Verify that the required driver headers (`<driver/temp_sensor.h>` or `<driver/temperature_sensor.h>`) are available in your Arduino core.
+- **"Unsupported chip model"**:
+  - The library only supports ESP32-based chips. Check the chip model using `ESP.getChipModel()`.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature`).
+3. Make your changes and commit (`git commit -m "Add your feature"`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a Pull Request.
+
+Please ensure your code follows the existing style and includes appropriate documentation.
+
+## License
+
+This library is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For questions or support, please open an issue on the [GitHub repository](https://github.com/PelicanHu/ESPCPUTemp/issues).
+
